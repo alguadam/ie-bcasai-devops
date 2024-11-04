@@ -4,3 +4,6 @@
 
 layout: home
 ---
+## Index page
+
+My index page
