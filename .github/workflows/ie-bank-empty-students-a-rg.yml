@@ -13,10 +13,10 @@ env:
   RESOURCE_GROUP_DEV: BCSAI2024-DEVOPS-STUDENTS-A-DEV
   RESOURCE_GROUP_UAT: BCSAI2024-DEVOPS-STUDENTS-A-UAT
   RESOURCE_GROUP_PROD: BCSAI2024-DEVOPS-STUDENTS-A-PROD
-  SUBSCRIPTION_ID_DEV: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
+  SUBSCRIPTION_ID: e0b9cada-61bc-4b5a-bd7a-52c606726b3b
 
 jobs:
-  remove-resource-groups:
+  remove-resource-group-dev:
     runs-on: ubuntu-latest
     steps:
     # Checkout code
@@ -32,19 +32,43 @@ jobs:
     - name: empty-resource-group-dev
       uses: azure/powershell@v2
       with:
-          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_DEV }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID_DEV }} "
+          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_DEV }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID }} "
           azPSVersion: "latest"
 
+  remove-resource-group-uat:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout code
+    - uses: actions/checkout@main
+    
+    # Log into Azure
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true 
+    
     # Empty resource group students uat
-    - name: empty-resource-group-dev
+    - name: empty-resource-group-uat
       uses: azure/powershell@v2
       with:
-          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_UAT }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID_DEV }} "
+          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_UAT }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID }} "
           azPSVersion: "latest"
+
+  remove-resource-group-prod:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout code
+    - uses: actions/checkout@main
+    
+    # Log into Azure
+    - uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true 
 
     # Empty resource group students prod
     - name: empty-resource-group-prod
       uses: azure/powershell@v2
       with:
-          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_PROD }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID_DEV }} "
+          inlineScript: ./scripts/empty-resource-group -ResourceGroupName "${{ env.RESOURCE_GROUP_PROD }}" -SubscriptionId "${{ env.SUBSCRIPTION_ID }} "
           azPSVersion: "latest"
